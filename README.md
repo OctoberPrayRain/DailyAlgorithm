@@ -1,2 +1,4 @@
 # DailyAlgorithm
-[P.A.P.E.D]Practice Agorithm Problems Every Day
+2026.03.10
+Today's Algorithm quest:
+NaN

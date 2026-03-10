@@ -3,6 +3,7 @@ Source of Algorithm problem: [灵神的题单](https://github.com/EndlessCheng)
 
 # 2026.03.10
 You can skip the algorithm problems today and complete the C language syntax exercises first ~ 🎯
+
 [c-review-practice](/c-review-practice/README.md)
 
 Today's Algorithm quest:

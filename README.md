@@ -1,4 +1,6 @@
 # DailyAlgorithm
-2026.03.10
+Source of Algorithm problem: [灵神的题单](https://github.com/EndlessCheng)
+
+# 2026.03.10
 Today's Algorithm quest:
-NaN
+[定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/description/)

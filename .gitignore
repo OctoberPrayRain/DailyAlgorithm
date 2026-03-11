@@ -1,1 +1,7 @@
-my-answer/*
+my-answer/build
+my-answer/src/main.dSYM
+my-answer/src/main
+my-answer/src/c-review-practice/.cph/
+my-answer/src/c-review-practice/p01.bin
+build/
+.vscode/

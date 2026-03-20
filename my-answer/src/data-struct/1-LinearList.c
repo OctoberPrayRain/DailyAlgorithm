@@ -1,98 +1,108 @@
 #include <stdbool.h>
 #include <stdio.h>
-#define MaxSize 50
+
+#define MAX_SIZE 50
 
 typedef int ElemType;
 
-typedef struct {
-  ElemType data[MaxSize];
-  int Length;
+typedef struct{
+    ElemType data[MAX_SIZE];
+    unsigned length;
 } SqList;
 
 void InitList(SqList *L) {
-  L->Length = 0;
-  return;
+    L->length = 0;
 }
 
-bool ListEmpty(SqList *L) {
-  return L->Length == 0;
+bool ListEmpty(const SqList *L) {
+    return L->length == 0;
 }
 
-int GetLength(SqList *L) {
-  return L->Length;
+unsigned ListLength(const SqList *L) {
+    return L->length;
 }
 
-bool ListInsert(SqList *L, int i, ElemType e) {
-
-  // 如果 i 大于 Length+1 或者 i 小于 1，超出索引范围，直接返回 false
-  if (i > (L->Length+1) || i < 1) {
-    printf("\nOut of indexing!\n");
-    return false;
-  }
-
-  // 如果顺序表已经满了
-  if (L -> Length == MaxSize) {
-    printf("\nList is full!\n");
-    return false;
-  }
-
-  // 先移动半个数组
-  for (int j = L->Length; j >= i; j--) {
-    L->data[j] = L->data[j-1];
-  }
-
-  L->data[i-1] = e;
-  // 数组长度+1
-  L->Length ++;
-
-  return true;
-}
-
-bool ListDelete(SqList *L, int i) {
-
-  if (i < 1 || i > L->Length) {
-    printf("\nOut of indexing!\n");
-    return false;
-  }
-
-  for (int j = i-1; j < L->Length-1; j++) {
-    L->data[j] = L->data[j+1];
-  }
-  L->Length --;
-  return true;
-}
-
-int LocateElem(SqList *L, ElemType e) {
-  for (int i = 0; i < L->Length; i ++) {
-    if (L->data[i] == e) {
-      return i;
+bool GetElem(const SqList *L, unsigned i, ElemType *e) {
+    if (i > L->length || i < 1) {
+        return false;
     }
-  }
 
-  // -1表示没查到
-  return -1;
+    *e = L->data[i];
+    return true;
 }
 
-ElemType GetElem(SqList *L, int i) {
-  return L->data[i - 1];
+bool ListInsert(SqList *L, unsigned i, ElemType e) {
+    if (L->length == MAX_SIZE || i < 1 || i > L->length + 1) {
+        return false;
+    }
+
+    for (int j = L->length; j > i-1; j--) {
+        L->data[j] = L->data[j-1];
+    }
+
+    L->data[i-1] = e;
+    L->length ++;
+    return true;
 }
 
-void PrintList(SqList *L) {
-  for (int i = 0; i < L->Length; i++) {
-    printf("%d ", L->data[i]);
-  }
-  return;
+unsigned LocateElem(const SqList *L, ElemType e) {
+    for (int i = 0; i < L->length; i ++) {
+        if (e == L->data[i]) {
+            return i + 1;
+        }
+    }
+
+    return 0;
 }
 
-int main() {
-  SqList L;
-  InitList(&L);
-  ListInsert(&L, 1, 12);
-  ListInsert(&L, 2, 13);
-  ListInsert(&L, 3, 15);
-  ListInsert(&L, 2, 4);
-  ListInsert(&L, 2, 4);
-  ListInsert(&L, 49, 1);
-  PrintList(&L);
+void PrintList(const SqList *L) {
+    for (int i = 0; i < L->length; i ++) {
+        printf("%d ", L->data[i]);
+    }
 }
 
+bool ListDelete(SqList *L, unsigned i, ElemType *e) {
+    if (i < 1 || i > L->length) {
+        return false;
+    }
+
+    *e = L->data[i - 1];
+
+    for (int j = i - 1; j <= L->length - 1; j ++) {
+        L->data[j] = L->data[j+1];
+    }
+
+    L->length --;
+    return true;
+}
+
+int main(void) {
+    SqList L;
+    ElemType value;
+
+    InitList(&L);
+
+    ListInsert(&L, 1, 12);
+    ListInsert(&L, 2, 13);
+    ListInsert(&L, 3, 15);
+    ListInsert(&L, 2, 4);
+    ListInsert(&L, 2, 8);
+
+    printf("当前顺序表: ");
+    PrintList(&L);
+
+    if (GetElem(&L, 3, &value)) {
+        printf("第 3 个元素是: %d\n", value);
+    }
+
+    printf("元素 13 的位序是: %d\n", LocateElem(&L, 13));
+
+    if (ListDelete(&L, 2, &value)) {
+        printf("删除的元素是: %d\n", value);
+    }
+
+    printf("删除后的顺序表: ");
+    PrintList(&L);
+
+    return 0;
+}

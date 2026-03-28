@@ -1,13 +1,13 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 typedef int ElemType;
 
 typedef struct LNode {
         ElemType data;
-        struct LNode* next;
-} LNode, *LinkedList;    // LinkedList 等价于 LNode*
+        struct LNode *next;
+} LNode, * LinkedList;
 
 bool InitList(LinkedList *L) {
         *L = (LNode *)malloc(sizeof(LNode));
@@ -18,90 +18,114 @@ bool InitList(LinkedList *L) {
         return true;
 }
 
-bool ListEmpty(const LinkedList L) {
-        return L == NULL || L->next == NULL;
+bool IsEmpty(const LinkedList L) {
+        if (L == NULL || L->next == NULL) {
+                return true;
+        }
+
+        return false;
 }
 
 int ListLength(const LinkedList L) {
-        int length = 0;
-        LinkedList p = L;
-
-        if (p == NULL) {
+        if (L == NULL) {
                 return 0;
         }
+
+        int i = 0;
+        LinkedList p = L;
         
         while (p->next != NULL) {
-                length ++;
+                i ++;
                 p = p->next;
         }
 
-        return length;
+        return i;
 }
 
-bool GetElem(const LinkedList L, int i, ElemType *e) {
-        if (i < 1 || L == NULL || i > ListLength(L)) {
+bool GetElem(const LinkedList L, const int i, ElemType *e) {
+        if (L == NULL || i < 1 || i > ListLength(L)) {
                 return false;
         }
 
         LinkedList p = L;
-        int n = 0;
-
-        while (n != i) {
+        for (int j = 0; j < i; j ++) {
                 p = p->next;
-                n ++;
         }
 
         *e = p->data;
         return true;
 }
 
-int LocateElem(const LinkedList L, ElemType e) {
+int GetLocate(const LinkedList L, const ElemType e) {
         if (L == NULL || L->next == NULL) {
                 return 0;
         }
 
         LinkedList p = L->next;
-        int locate = 1;
+        int i = 1;
 
-        while (p != NULL && p->data != e) {
+        while (p != NULL) {
+                if (p->data == e) {
+                        return i;
+                }
                 p = p->next;
-                locate ++;
+                i ++;
         }
 
-        return p == NULL ? 0 : locate;
+        return 0;
 }
 
-bool ListInsert(LinkedList L, int i, ElemType e) {
-        if (i < 1 || L == NULL || i > ListLength(L) + 1) {
+bool InsertList(LinkedList *L, const int i, const ElemType e) {
+        if (*L == NULL || i < 1 || i > ListLength(*L) + 1) {
                 return false;
         }
 
-        int n = 0;
-
-        while (n != i-1) {
-                L = L->next;
-                n ++;
-        }
-
-        LinkedList p = (LNode *)malloc(sizeof(LNode));
-
-        if (p == NULL) {
+        LinkedList node = (LNode *)malloc(sizeof(LNode));
+        if (node == NULL) {
                 return false;
         }
-        
-        p->data = e;
-        p->next = L->next;
-        L->next = p;
+
+        node->data = e;
+
+        LinkedList p = *L;
+        int j = 0;
+
+        while (j != i - 1) {
+                p = p->next;
+                j ++;
+        }
+
+        node->next = p->next;
+        p->next = node;
         return true;
 }
 
+bool RemoveList(LinkedList *L, const int i, ElemType *e) {
+        if ((*L) == NULL || (*L)->next == NULL || i < 1 || i > ListLength(*L)) {
+                return false;
+        }
+
+        LinkedList p = *L;
+        int j = 0;
+        while (j != i - 1) {
+                j ++;
+                p = p->next;
+        }
+
+        LinkedList node = p->next;
+        p->next = p->next->next;
+
+        *e = node->data;
+        free(node);
+
+        return true;
+}
 
 void PrintList(const LinkedList L) {
-        if (L == NULL) {
-                printf("链表头结点为空\n");
+        if (L == NULL || L->next == NULL) {
                 return;
         }
-        
+
         LinkedList p = L->next;
 
         while (p != NULL) {
@@ -110,22 +134,29 @@ void PrintList(const LinkedList L) {
         }
 
         printf("\n");
-
+        return;
 }
 
 void DestroyList(LinkedList *L) {
         if (*L == NULL) {
                 return;
         }
-        
-        LinkedList p = *L;
 
-        while(p != NULL) {
-                LinkedList temp = p;
-                p = p -> next;
-                free(temp);
+        if ((*L)->next == NULL) {
+                free(*L);
+                *L = NULL;
+                return;
         }
 
-        *L = NULL;
-}
+        LinkedList p = (*L)->next, node = NULL;
+        while (p->next != NULL) {
+                node = p;
+                p = p->next;
+                free(node);
+        }
 
+        free(p);
+        free(*L);
+        *L = NULL;
+        return;
+}

@@ -1,10 +1,36 @@
-my-answer/build
-my-answer/src/main.dSYM
-my-answer/src/main
-my-answer/src/c-review-practice/.cph/
-my-answer/src/c-review-practice/p01.bin
+# Build directories
 build/
-.vscode/
-a
-test
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Executables (no extension)
+*
+!*.*
+!*/
+
+# macOS
 *.dSYM/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.out
+*.bin
+*.a
+*.so
+*.dll
+
+# Practice specific
+.cph/

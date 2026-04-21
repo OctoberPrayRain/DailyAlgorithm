@@ -4,159 +4,119 @@
 
 typedef int ElemType;
 
+/* 带头结点的单链表
+ * 头结点的 data 域存储链表长度（仅头结点有效）
+ */
 typedef struct LNode {
         ElemType data;
         struct LNode *next;
-} LNode, * LinkedList;
+} LNode, *LinkedList;
 
 bool InitList(LinkedList *L) {
         *L = (LNode *)malloc(sizeof(LNode));
         if (*L == NULL) {
                 return false;
         }
+        (*L)->data = 0;
         (*L)->next = NULL;
         return true;
 }
 
 bool IsEmpty(const LinkedList L) {
-        if (L == NULL || L->next == NULL) {
-                return true;
-        }
-
-        return false;
+        return L == NULL || L->next == NULL;
 }
 
 int ListLength(const LinkedList L) {
         if (L == NULL) {
                 return 0;
         }
-
-        int i = 0;
-        LinkedList p = L;
-        
-        while (p->next != NULL) {
-                i ++;
-                p = p->next;
-        }
-
-        return i;
+        return L->data;
 }
 
-bool GetElem(const LinkedList L, const int i, ElemType *e) {
-        if (L == NULL || i < 1 || i > ListLength(L)) {
+bool GetElem(const LinkedList L, int i, ElemType *e) {
+        if (L == NULL || i < 1 || i > L->data) {
                 return false;
         }
-
-        LinkedList p = L;
-        for (int j = 0; j < i; j ++) {
+        LNode *p = L->next;
+        for (int j = 1; j < i; j++) {
                 p = p->next;
         }
-
         *e = p->data;
         return true;
 }
 
-int GetLocate(const LinkedList L, const ElemType e) {
-        if (L == NULL || L->next == NULL) {
-                return 0;
+int GetLocation(const LinkedList L, ElemType e) {
+        if (L == NULL || L->data == 0) {
+                return 0;    // 0 表示未找到
         }
-
-        LinkedList p = L->next;
-        int i = 1;
-
-        while (p != NULL) {
+        LNode *p = L->next;
+        for (int i = 1; i <= L->data; i++) {
                 if (p->data == e) {
                         return i;
                 }
                 p = p->next;
-                i ++;
         }
-
         return 0;
 }
 
-bool InsertList(LinkedList *L, const int i, const ElemType e) {
-        if (*L == NULL || i < 1 || i > ListLength(*L) + 1) {
+bool InsertList(LinkedList *L, int i, ElemType e) {
+        if (*L == NULL || i < 1 || i > (*L)->data + 1) {
                 return false;
         }
-
-        LinkedList node = (LNode *)malloc(sizeof(LNode));
+        LNode *p = *L;
+        for (int j = 1; j < i; j++) {
+                p = p->next;
+        }
+        LNode *node = (LNode *)malloc(sizeof(LNode));
         if (node == NULL) {
                 return false;
         }
-
         node->data = e;
-
-        LinkedList p = *L;
-        int j = 0;
-
-        while (j != i - 1) {
-                p = p->next;
-                j ++;
-        }
-
         node->next = p->next;
         p->next = node;
+        (*L)->data++;
         return true;
 }
 
-bool RemoveList(LinkedList *L, const int i, ElemType *e) {
-        if ((*L) == NULL || (*L)->next == NULL || i < 1 || i > ListLength(*L)) {
+bool RemoveList(LinkedList *L, int i, ElemType *e) {
+        if (*L == NULL || i < 1 || i > (*L)->data) {
                 return false;
         }
-
-        LinkedList p = *L;
-        int j = 0;
-        while (j != i - 1) {
-                j ++;
+        LNode *p = *L;
+        for (int j = 1; j < i; j++) {
                 p = p->next;
         }
-
-        LinkedList node = p->next;
-        p->next = p->next->next;
-
+        LNode *node = p->next;
+        p->next = node->next;
         *e = node->data;
         free(node);
-
+        (*L)->data--;
         return true;
 }
 
 void PrintList(const LinkedList L) {
-        if (L == NULL || L->next == NULL) {
+        if (L == NULL || L->data == 0) {
                 return;
         }
-
-        LinkedList p = L->next;
-
-        while (p != NULL) {
+        LNode *p = L->next;
+        for (int i = 1; i <= L->data; i++) {
                 printf("%d ", p->data);
                 p = p->next;
         }
-
         printf("\n");
-        return;
 }
 
-void DestroyList(LinkedList *L) {
+bool DestroyList(LinkedList *L) {
         if (*L == NULL) {
-                return;
+                return true;
         }
-
-        if ((*L)->next == NULL) {
-                free(*L);
-                *L = NULL;
-                return;
-        }
-
-        LinkedList p = (*L)->next, node = NULL;
-        while (p->next != NULL) {
-                node = p;
+        LNode *p = (*L)->next;
+        while (p != NULL) {
+                LNode *node = p;
                 p = p->next;
                 free(node);
         }
-
-        free(p);
         free(*L);
         *L = NULL;
-        return;
+        return true;
 }
